@@ -3,9 +3,8 @@ error_reporting(0);
 
 session_start();
 
-$total=0;
-
-
+ $_SESSION['ammount'] = 0;
+ $cart = array();
 $conn = new PDO("mysql:host=localhost;dbname=create-products", 'root', '');		
 $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
@@ -22,6 +21,7 @@ if($action=='addcart' && $_SERVER['REQUEST_METHOD']=='POST') {
 	$stmt->bindParam('sku', $_POST['sku']);
 	$stmt->execute();
 	$product = $stmt->fetch();
+
 	
 	
 	$_SESSION['products'][$_POST['sku']] =array('name'=>$product['name'],'image'=>$product['image'],'price'=>$product['price']);
@@ -32,6 +32,7 @@ if($action=='addcart' && $_SERVER['REQUEST_METHOD']=='POST') {
 
 if($action=='emptyall') {
 	$_SESSION['products'] =array();
+  $_SESSION['ammount']= 0;
 	header("Location:webshop.php");	
 }
 
@@ -39,14 +40,15 @@ if($action=='emptyall') {
 if($action=='empty') {
 	$sku = $_GET['sku'];
 	$products = $_SESSION['products'];
+  $_SESSION['ammount'] = $_SESSION['ammount'] - $product['price'];
 	unset($products[$sku]);
 	$_SESSION['products']= $products;
 	header("Location:webshop.php");	
 }
 
 
- if($action=='pay') {
-	header("Location:payment.php");	
+ if($action=='pay') {  
+  header("Location:payment.php");
 }
  
 
@@ -63,7 +65,7 @@ $products = $stmt->fetchAll();
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PHP registration form</title>
+<title>Webshop</title>
 
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -98,9 +100,10 @@ $products = $stmt->fetchAll();
       </td>
     </tr>
     <?php
-    	$total = $total+$product['price'];?>
+    	 $_SESSION['ammount'] =  $_SESSION['ammount']+$product['price'];?>
+
     <?php endforeach;?>
-    <tr><td colspan="5" align="right"><h4>Total:$<?php print $total?></h4></td></tr>
+    <tr><td colspan="5" align="right"><h4>Total:$<?php print  $_SESSION['ammount']?></h4></td></tr>
   </table>
   <?php endif;?>
   
@@ -133,8 +136,8 @@ $products = $stmt->fetchAll();
 </div>
 <div class="row">
     	<div class="container" style="width:100px;">
-    		<form method="post" action="payment.php?action=pay">
-			<button type="submit" class="btn btn-warning">Pay</button>
+    		<form method="post" action="webshop.php?action=pay">
+		<button type="submit" class="btn btn-warning">Pay</button>
 </div>
 </div>
 </body>

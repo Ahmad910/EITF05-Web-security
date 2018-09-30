@@ -1,22 +1,25 @@
 <?php
-
-$username = $_POST['username'];
-$password= $_POST['password'];
+if(isset($_POST['username'])){
+    $username = $_POST['username'];
+}
+if(isset($_POST['password'])){
+    $password = $_POST['password'];
+}
 
 $submit = isset($_POST['sub']);
-$connection = mysqli_connect("localhost", "root", "root", "LogIn");  
+$connection = mysqli_connect("localhost", "root", "", "loguser");
 
 echo "Sign In";
 echo "<br>";
 
     if($submit and $connection){
-        $userQuery = "SELECT * FROM logUser WHERE username = '".$username."'";
+        $userQuery = "SELECT * FROM loguser WHERE username = '".$username."'";
         $userResult = mysqli_query($connection, $userQuery);
         $row = mysqli_fetch_array($userResult);    
         
         //User exist
         if($row and $row[password] == $password){
-            header("Location: http://localhost:8888/webShop.php");
+            header("Location:webShop.php?action=emptyall");
 
         }else{
             echo "Incorrect username or password";
@@ -28,8 +31,7 @@ echo "<br>";
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>mcLog</title>
-</head>
+<title>Sign In</title></head>
 <body>
     
     <!-- Till den metoden vi skickar den till -->

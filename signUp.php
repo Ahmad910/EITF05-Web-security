@@ -1,15 +1,20 @@
 <?php
-
-$username = $_POST['username'];
-$password= $_POST['password'];
-$homeAddress = $_POST['homeAddress'];
-$connection = mysqli_connect("localhost", "root", "root", "LogIn");
+if(isset($_POST['username'])){
+    $username = $_POST['username'];
+}
+if(isset($_POST['password'])){
+    $password = $_POST['password'];
+}
+if(isset($_POST['homeAddress'])){
+    $homeAddress = $_POST['homeAddress'];
+}
+$connection = mysqli_connect("localhost", "root", "", "loguser");
 
 echo "Sign up";
 echo "<br>";
 
     if(isset($_POST['subm']) and $connection){
-        $userQuery = "SELECT * FROM logUser WHERE username = '".$username."'";
+        $userQuery = "SELECT * FROM loguser WHERE username = '".$username."'";
         $userResult = mysqli_query($connection, $userQuery);
         $row = mysqli_fetch_array($userResult);    
       
@@ -25,10 +30,10 @@ echo "<br>";
         }    
             //Checks if user-info is valid and add user.
         else{
-            $query = "INSERT INTO logUser(homeAddress,username,password)";
+            $query = "INSERT INTO loguser(homeAddress,username,password)";
             $query .= "VALUES ('$homeAddress','$username', '$password')";
             $result = mysqli_query($connection, $query);
-            header("Location: http://localhost:8888/signIn.php");
+            header("Location:signIn.php");
 
 
             if(!$result){
@@ -42,7 +47,7 @@ echo "<br>";
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>mcLog</title>
+<title>Sign Up</title>
 </head>
 <body>
     
