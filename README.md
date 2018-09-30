@@ -1,12 +1,12 @@
 # EITF05-Webbs-kerhet
 Project in web security
 
-För att få TLS att fungera har jag bytt WAMP mot Xampp.
+FÃ¶r att fÃ¥ TLS att fungera har jag bytt WAMP mot Xampp.
 
 
 Instruktioner:
  
-- Lägg php-filer och jpeg-filer i en mapp ni kallar   "myproject". Placera sedan mappen i C:\xampp\htdocs\.
+- LÃ¤gg php-filer och jpeg-filer i en mapp ni kallar   "myproject". Placera sedan mappen i C:\xampp\htdocs\.
 
 - Importera databasfilen "requiredDbFiles.sql" i phpmyadmin.
 
@@ -16,17 +16,17 @@ TLS konfiguration:
 
 2. Placera "server.key" filen i "\xampp\apache\conf\ssl.key\"
 
-3. Ersätt filen "httpd-ssl.conf i "\xampp\apache\conf\extra\" med den nya.
+3. ErsÃ¤tt filen "httpd-ssl.conf i "\xampp\apache\conf\extra\" med den nya.
 
 4. Ladda upp "ca.crt" bland "trusted root certification authorities store".
- På Chrome: Intällningar --> Avancerad --> Hantera certifikat
+ PÃ¥ Chrome: IntÃ¤llningar --> Avancerad --> Hantera certifikat
 
-- För att köra hemsidan skriver nu nu https://localhost/ som URL.
+- FÃ¶r att kÃ¶ra hemsidan skriver nu nu https://localhost/ som URL.
 
--Om ni inte kan ansluta till hemsidan, gör följande:
+Om ni inte kan ansluta till hemsidan, gÃ¶r fÃ¶ljande:
 
-1. Öppna httpd.conf filen i xampp\apache\conf och peka 'DocumentRoot "..."' till projekt-mappen (C:\xampp\htdocs\myproject. Gör likadant med '<Directory "...">'.
-2. Öppna sedan httpd-ssl.conf filen i xampp\apache\conf\extra och ändra 'DocumentRoot' som ovan.
+1. Ã–ppna httpd.conf filen i xampp\apache\conf och peka 'DocumentRoot "..."' till projekt-mappen (C:\xampp\htdocs\myproject. GÃ¶r likadant med '<Directory "...">'.
+2. Ã–ppna sedan httpd-ssl.conf filen i xampp\apache\conf\extra och Ã¤ndra 'DocumentRoot' som ovan.
 
 
 
