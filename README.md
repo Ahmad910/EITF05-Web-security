@@ -5,8 +5,10 @@ För att få TLS att fungera har jag bytt WAMP mot Xampp.
 
 
 Instruktioner:
+
+- Installera Xampp.
  
-- Lägg php-filer och jpeg-filer i en mapp ni kallar   "myproject". Placera sedan mappen i C:\xampp\htdocs\.
+- Placera myproject  i C:\xampp\htdocs\.
 
 - Importera databasfilen "requiredDbFiles.sql" i phpmyadmin.
 
