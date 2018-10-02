@@ -3,6 +3,10 @@ error_reporting(0);
 
 session_start();
 
+
+  if($_SESSION['auth']== false){
+  echo 'ERROR: unauthenticated(Not logged in)';
+}else{
  $_SESSION['ammount'] = 0;
  $cart = array();
 $conn = new PDO("mysql:host=localhost;dbname=create-products", 'root', '');		
@@ -49,6 +53,11 @@ if($action=='empty') {
 
  if($action=='pay') {  
   header("Location:payment.php");
+}
+
+if($action == 'logout'){
+  $_SESSION['auth'] = false;
+  header("Location:index.php");
 }
  
 
@@ -139,6 +148,16 @@ $products = $stmt->fetchAll();
     		<form method="post" action="webshop.php?action=pay">
 		<button type="submit" class="btn btn-warning">Pay</button>
 </div>
+</form>
+  <br>
+<div class="row">
+      <div class="container" style="width:100px;">
+        <form method="post" action="webshop.php?action=logout">
+    <button type="submit1" class="btn btn-warning">Log out</button>
+</div>
 </div>
 </body>
 </html>
+<?php }
+
+?>

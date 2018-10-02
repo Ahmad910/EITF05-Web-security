@@ -1,4 +1,7 @@
 <?php
+session_start();
+$_SESSION['counter'] = 0;
+$_SESSION['auth'] = false;
 echo "Welcome to our webshop!";
 echo "<br>";
 echo "Please sign in or sign up.";

@@ -1,4 +1,7 @@
 <?php
+session_start();
+
+$_SESSION['auth'] = false;
 if(isset($_POST['username'])){
     $username = $_POST['username'];
 }
@@ -11,20 +14,28 @@ $connection = mysqli_connect("localhost", "root", "", "loguser");
 
 echo "Sign In";
 echo "<br>";
-
+ if( $_SESSION['counter'] < 5){
     if($submit and $connection){
+       
         $userQuery = "SELECT * FROM loguser WHERE username = '".$username."'";
         $userResult = mysqli_query($connection, $userQuery);
         $row = mysqli_fetch_array($userResult);    
         
         //User exist
-        if($row and $row[password] == $password){
+        if($row and $row['password'] == $password){
+        	$_SESSION['auth'] = true; 
             header("Location:webShop.php?action=emptyall");
 
         }else{
             echo "Incorrect username or password";
+            $_SESSION['counter'] = $_SESSION['counter'] + 1;
+
         }
     }
+}else{
+     exit("Brute Force Lockdown. Contact webmaster!");
+  }
+
 ?>
 
 <!DOCTYPE html>

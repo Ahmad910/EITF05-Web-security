@@ -1,3 +1,10 @@
+<?php
+session_start();
+if(isset($_SESSION['auth'])){
+  if($_SESSION['auth']== false){
+  echo 'ERROR: unauthenticated';
+  }else{
+?>
 <!DOCTYPE HTML>  
 <html>
 <head>
@@ -9,7 +16,7 @@
 <body>  
 
 <?php
-session_start();
+
 $total = $_SESSION['ammount'];
 
 $cardNumberErr = "";
@@ -77,3 +84,8 @@ if (isset($_POST['submit'])) {
 }?>
 </body>
 </html>
+<?php
+     }    
+}else{
+     echo 'ERROR: unauthenticated';
+}?>
