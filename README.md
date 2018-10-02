@@ -10,7 +10,7 @@ Instruktioner:
  
 - Placera myproject  i C:\xampp\htdocs\.
 
-- Importera databasfilen "dbFiles.sql" i phpmyadmin.
+- Importera databasfilen "db-file.sql" i phpmyadmin.
 
 
 TLS konfiguration:
