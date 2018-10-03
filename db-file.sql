@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Värd: 127.0.0.1
--- Tid vid skapande: 02 okt 2018 kl 09:11
+-- Tid vid skapande: 03 okt 2018 kl 22:11
 -- Serverversion: 10.1.36-MariaDB
 -- PHP-version: 7.2.10
 
@@ -72,15 +72,16 @@ USE `loguser`;
 CREATE TABLE `loguser` (
   `username` varchar(32) CHARACTER SET utf8 NOT NULL,
   `password` varchar(32) CHARACTER SET utf8 NOT NULL,
-  `homeAddress` varchar(32) CHARACTER SET utf8 NOT NULL
+  `homeAddress` varchar(32) CHARACTER SET utf8 NOT NULL,
+  `counter` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumpning av Data i tabell `loguser`
 --
 
-INSERT INTO `loguser` (`username`, `password`, `homeAddress`) VALUES
-('plosen', '123456789', 'helsingborg');
+INSERT INTO `loguser` (`username`, `password`, `homeAddress`, `counter`) VALUES
+('plosen', '123456789', 'helsingborg', 1);
 
 --
 -- Index för dumpade tabeller
