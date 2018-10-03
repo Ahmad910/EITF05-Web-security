@@ -5,42 +5,34 @@ session_start();
 
 
   if($_SESSION['auth']== false){
-  echo 'ERROR: unauthenticated(Not logged in)';
+  echo 'ERROR: unauthenticated';
 }else{
  $_SESSION['ammount'] = 0;
  $cart = array();
 $conn = new PDO("mysql:host=localhost;dbname=create-products", 'root', '');		
 $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-
-
-
 $action = isset($_GET['action'])?$_GET['action']:"";
 
-
 if($action=='addcart' && $_SERVER['REQUEST_METHOD']=='POST') {
-	
+
 	//Finding the product by code
 	$query = "SELECT * FROM products WHERE sku=:sku";
 	$stmt = $conn->prepare($query);
 	$stmt->bindParam('sku', $_POST['sku']);
 	$stmt->execute();
 	$product = $stmt->fetch();
-
-	
 	
 	$_SESSION['products'][$_POST['sku']] =array('name'=>$product['name'],'image'=>$product['image'],'price'=>$product['price']);
 	$product='';
 	header("Location:webshop.php");
 }
 
-
 if($action=='emptyall') {
 	$_SESSION['products'] =array();
   $_SESSION['ammount']= 0;
 	header("Location:webshop.php");	
 }
-
 
 if($action=='empty') {
 	$sku = $_GET['sku'];
@@ -51,7 +43,6 @@ if($action=='empty') {
 	header("Location:webshop.php");	
 }
 
-
  if($action=='pay') {  
   header("Location:payment.php");
 }
@@ -61,14 +52,11 @@ if($action == 'logout'){
   header("Location:index.php");
 }
  
-
 $query = "SELECT * FROM products";
 $stmt = $conn->prepare($query);
 $stmt->execute();
 $products = $stmt->fetchAll();
-
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -76,7 +64,6 @@ $products = $stmt->fetchAll();
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Webshop</title>
-
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 </head>	
@@ -160,5 +147,4 @@ $products = $stmt->fetchAll();
 </body>
 </html>
 <?php }
-
 ?>

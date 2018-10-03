@@ -18,7 +18,12 @@ $connection = mysqli_connect("localhost", "root", "", "loguser");
 echo "Sign In";
 echo "<br>";
 $_SESSION['username'] = $username;
- if( $_SESSION['counter'] < 5){
+$userQuery = "SELECT counter FROM loguser WHERE username = '".$username."'";
+$row = mysqli_fetch_array(mysqli_query($connection, $userQuery));
+$counter = intval($row['counter']);
+
+ if( $counter < 5){
+   
     if($submit and $connection){
         $userQuery = "SELECT * FROM loguser WHERE username = '".$username."'";
         $userResult = mysqli_query($connection, $userQuery);
@@ -31,8 +36,9 @@ $_SESSION['username'] = $username;
 
         }else{
             echo "Incorrect username or password";
-            $_SESSION['counter'] = $_SESSION['counter'] + 1;
-
+            $counter = $counter + 1;
+            $sql = "UPDATE loguser SET counter ='".$counter."' WHERE username ='".$username."'";
+            mysqli_query($connection, $sql);
         }
     }
 }else{

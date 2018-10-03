@@ -1,13 +1,9 @@
 <?php
 session_start();
-$_SESSION['counter'] = 0;
-$_SESSION['auth'] = false;
 echo "Welcome to our webshop!";
 echo "<br>";
 echo "Please sign in or sign up.";
-
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,7 +11,6 @@ echo "Please sign in or sign up.";
 <title>Webshop</title>
 </head>
 <body>
-    
     <!-- Sign up -->
     <form action="signUp.php" method="post">
     <input type="submit" name="su" value="Sign Up">
