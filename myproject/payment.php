@@ -1,4 +1,5 @@
 <?php
+require 'preventXSS.php'; //please comment "require 'preventXSS.php'" to enable XSS attack.
 session_start();
 if(isset($_SESSION['auth'])){
   if($_SESSION['auth']== false){
@@ -18,7 +19,7 @@ if(isset($_SESSION['auth'])){
 <?php
 
 $total = $_SESSION['ammount'];
-
+$naa = $_SESSION['username'];
 $cardNumberErr = "";
 $cardNumber = "";
 
@@ -44,7 +45,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 if (isset($_POST['submit'])) {
   if (empty($_POST["cardNumber"])) {
   }
-  elseif (!preg_match("/^[0-9]*$/",$cardNumber)) {
+  elseif (!preg_match("/^[0-9]*$/",escape($cardNumber))) { //remove the calling of escape to enable XSS attack.
       
    }else{
    	?>
@@ -63,8 +64,8 @@ if (isset($_POST['submit'])) {
     foreach($_SESSION['products'] as $key=>$product):
     ?>
     <tr>
-      <td><?php print $product['name']?></td>
-      <td>$<?php print $product['price']?></td>
+      <td><?php print ($product['name'])?></td>
+      <td>$<?php print ($product['price'])?></td>
     </tr>
     <?php endforeach; ?>  
     </table>
@@ -73,7 +74,10 @@ if (isset($_POST['submit'])) {
     Total cost:
     <?php echo "$";
     echo $total;
-    ?>
+    echo '<br/>';
+    echo 'Purchaser: ';
+    echo $naa;
+      ?>
     
 <br><br><br><br>
 <form action="webshop.php?action=emptyall" method="post"> 

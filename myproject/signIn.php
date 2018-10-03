@@ -1,9 +1,12 @@
 <?php
+require 'preventXSS.php'; //please comment "require 'preventXSS.php'" to enable XSS attack.
 session_start();
 
 $_SESSION['auth'] = false;
+$username ='';
 if(isset($_POST['username'])){
-    $username = $_POST['username'];
+    $username = escape($_POST['username']); //remove the calling of escape to enable XSS attack.
+
 }
 if(isset($_POST['password'])){
     $password = $_POST['password'];
@@ -14,9 +17,9 @@ $connection = mysqli_connect("localhost", "root", "", "loguser");
 
 echo "Sign In";
 echo "<br>";
+$_SESSION['username'] = $username;
  if( $_SESSION['counter'] < 5){
     if($submit and $connection){
-       
         $userQuery = "SELECT * FROM loguser WHERE username = '".$username."'";
         $userResult = mysqli_query($connection, $userQuery);
         $row = mysqli_fetch_array($userResult);    

@@ -1,12 +1,14 @@
 <?php
+require 'preventXSS.php'; //please comment "require 'preventXSS.php'" to enable XSS attack.
 if(isset($_POST['username'])){
-    $username = $_POST['username'];
+    $username = escape($_POST['username']); //remove the calling of escape to enable XSS attack.
+
 }
 if(isset($_POST['password'])){
     $password = $_POST['password'];
 }
 if(isset($_POST['homeAddress'])){
-    $homeAddress = $_POST['homeAddress'];
+    $homeAddress = escape($_POST['homeAddress']); //remove the calling of escape to enable XSS attack.
 }
 $connection = mysqli_connect("localhost", "root", "", "loguser");
 
@@ -23,7 +25,7 @@ echo "<br>";
             echo ("Please fill in all information.");
         } else if($row){
                 echo "Username aldredy exists. ";  
-        } else if(strlen($username) > 10){
+        } else if(strlen($username) > 300){
                 echo "Username is too long. ";
         } else if(strlen($password) < 8){
                 echo "Password is too short. ";
@@ -34,8 +36,6 @@ echo "<br>";
             $query .= "VALUES ('$homeAddress','$username', '$password')";
             $result = mysqli_query($connection, $query);
             header("Location:signIn.php");
-
-
             if(!$result){
                 die('Query failed' . mysqli_error());
             }    
@@ -57,7 +57,6 @@ echo "<br>";
     <input type="password" name="password" placeholder="Enter password">
     <input type="text" name="homeAddress" placeholder="Enter street name">
     <input type="submit" name="subm" value = "Create user and proceed to log in.">
-
     </form>
 </body>
 </html>
