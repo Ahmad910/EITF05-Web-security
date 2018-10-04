@@ -2,60 +2,67 @@
 error_reporting(0);
 
 session_start();
+//please comment the next 4 rows to enabe CSRF attack.
+include'Csrf.php';
+$csrf = new Csrf();
+$token_id = $csrf->get_token_id();
+$token_value = $csrf->get_token($token_id);
 
 
-  if($_SESSION['auth']== false){
+
+
+
+
+if($_SESSION['auth']== false){
   echo 'ERROR: unauthenticated';
 }else{
- $_SESSION['ammount'] = 0;
- $cart = array();
-$conn = new PDO("mysql:host=localhost;dbname=create-products", 'root', '');		
-$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+  if($csrf->get_token_id()==$_SESSION['token']) {//please comment this to enabe CSRF attack.
+    $_SESSION['ammount'] = 0;
+    $cart = array();  
+    $conn = new PDO("mysql:host=localhost;dbname=create-products", 'root', '');		
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $action = isset($_GET['action'])?$_GET['action']:"";
+    if($action=='addcart' && $_SERVER['REQUEST_METHOD']=='POST') {
+	     //Finding the product by code
+	     $query = "SELECT * FROM products WHERE sku=:sku";
+	     $stmt = $conn->prepare($query);
+	     $stmt->bindParam('sku', $_POST['sku']);
+	     $stmt->execute();
+	     $product = $stmt->fetch();
+	     $_SESSION['products'][$_POST['sku']] =array('name'=>$product['name'],'image'=>$product['image'],'price'=>$product['price']);
+	     $product='';
+	     header("Location:webshop.php");
+    }
 
-$action = isset($_GET['action'])?$_GET['action']:"";
+    if($action=='emptyall') {
+	     $_SESSION['products'] =array();
+       $_SESSION['ammount']= 0;
+	     header("Location:webshop.php");	
+    }
 
-if($action=='addcart' && $_SERVER['REQUEST_METHOD']=='POST') {
+    if($action=='empty') {
+	   $sku = $_GET['sku'];
+	   $products = $_SESSION['products'];
+      $_SESSION['ammount'] = $_SESSION['ammount'] - $product['price'];
+	   unset($products[$sku]);
+	   $_SESSION['products']= $products;
+	   header("Location:webshop.php");	
+    }
 
-	//Finding the product by code
-	$query = "SELECT * FROM products WHERE sku=:sku";
-	$stmt = $conn->prepare($query);
-	$stmt->bindParam('sku', $_POST['sku']);
-	$stmt->execute();
-	$product = $stmt->fetch();
-	
-	$_SESSION['products'][$_POST['sku']] =array('name'=>$product['name'],'image'=>$product['image'],'price'=>$product['price']);
-	$product='';
-	header("Location:webshop.php");
-}
+    if($action=='pay') {  
+      header("Location:payment.php");
+    } 
 
-if($action=='emptyall') {
-	$_SESSION['products'] =array();
-  $_SESSION['ammount']= 0;
-	header("Location:webshop.php");	
-}
-
-if($action=='empty') {
-	$sku = $_GET['sku'];
-	$products = $_SESSION['products'];
-  $_SESSION['ammount'] = $_SESSION['ammount'] - $product['price'];
-	unset($products[$sku]);
-	$_SESSION['products']= $products;
-	header("Location:webshop.php");	
-}
-
- if($action=='pay') {  
-  header("Location:payment.php");
-}
-
-if($action == 'logout'){
-  $_SESSION['auth'] = false;
-  header("Location:index.php");
-}
+    if($action == 'logout'){
+      $_SESSION['auth'] = false;
+      header("Location:index.php");
+    }
  
-$query = "SELECT * FROM products";
-$stmt = $conn->prepare($query);
-$stmt->execute();
-$products = $stmt->fetchAll();
+    $query = "SELECT * FROM products";
+    $stmt = $conn->prepare($query);
+    $stmt->execute();
+    $products = $stmt->fetchAll();
+}//please comment this to enabe CSRF attack.
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -135,6 +142,7 @@ $products = $stmt->fetchAll();
     	<div class="container" style="width:100px;">
     		<form method="post" action="webshop.php?action=pay">
 		<button type="submit" class="btn btn-warning">Pay</button>
+    <input type="hidden" name="<?= $token_id; ?>" value="<?= $token_value; ?>" />
 </div>
 </form>
   <br>

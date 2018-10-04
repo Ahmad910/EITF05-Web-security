@@ -1,7 +1,17 @@
 <?php
-require 'preventXSS.php'; //please comment "require 'preventXSS.php'" to enable XSS attack.
 session_start();
-if(isset($_SESSION['auth'])){
+require 'preventXSS.php'; //please comment "require 'preventXSS.php'" to enable XSS attack.
+
+//please comment the next 4 rows to enabe CSRF attack.
+include'Csrf.php';
+$csrf = new Csrf();
+$token_id = $csrf->get_token_id();
+$token_value = $csrf->get_token($token_id);
+
+
+
+
+if(isset($_SESSION['auth'])){//please comment this to enabe CSRF attack.
   if($_SESSION['auth']== false){
   echo 'ERROR: unauthenticated';
   }else{
@@ -19,10 +29,10 @@ if(isset($_SESSION['auth'])){
 <?php
 
 $total = $_SESSION['ammount'];
-$naa = $_SESSION['username'];
+$name = $_SESSION['username'];
 $cardNumberErr = "";
 $cardNumber = "";
-
+if($csrf->check_valid('post')){
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
   if (empty($_POST["cardNumber"])) {
     $cardNumberErr = "Card number is required";
@@ -33,6 +43,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
   }
 }
+
+}//please comment this to enabe CSRF attack.
 ?>
 <h2>Performing the payment..</h2>
 <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">  
@@ -40,8 +52,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <span class="error">* <?php echo $cardNumberErr;?></span>
   <br><br>
   <input type="submit" name="submit" value="Purchase">  
+  <input type="hidden" name="<?= $token_id; ?>" value="<?= $token_value; ?>" />
   </form>
 <?php
+if($csrf->check_valid('post')){//please comment this to enabe CSRF attack.
 if (isset($_POST['submit'])) {
   if (empty($_POST["cardNumber"])) {
   }
@@ -76,12 +90,14 @@ if (isset($_POST['submit'])) {
     echo $total;
     echo '<br/>';
     echo 'Purchaser: ';
-    echo $naa;
-      ?>
+    echo $name;
+  }//please comment this to enabe CSRF attack.
+?>
     
 <br><br><br><br>
 <form action="webshop.php?action=emptyall" method="post"> 
     <input type="submit" name="backToWs" value = "Continue shoping!">
+    <input type="hidden" name="<?= $token_id; ?>" value="<?= $token_value; ?>" /> 
   </form>
     <?php
      }    

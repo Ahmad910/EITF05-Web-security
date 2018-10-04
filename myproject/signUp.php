@@ -1,20 +1,35 @@
 <?php
-require 'preventXSS.php'; //please comment "require 'preventXSS.php'" to enable XSS attack.
-if(isset($_POST['username'])){
-    $username = escape($_POST['username']); //remove the calling of escape to enable XSS attack.
 
+session_start();
+require 'preventXSS.php'; //please comment "require 'preventXSS.php'" to enable XSS attack.
+//please comment the next 4 rows to enabe CSRF attack.
+include'Csrf.php';
+$csrf = new Csrf();
+$token_id = $csrf->get_token_id();
+$token_value = $csrf->get_token($token_id);
+
+
+if(isset($_POST['username'])){
+    if($csrf->check_valid('post')){//please comment this to enabe CSRF attack.
+        $username = escape($_POST['username']); //remove the calling of escape to enable XSS attack.
+        var_dump($_POST[$token_id]);
+    }//please comment this to enabe CSRF attack.
 }
 if(isset($_POST['password'])){
-    $password = $_POST['password'];
+    if($csrf->check_valid('post')){//please comment this to enabe CSRF attack.
+        $password = $_POST['password'];
+        var_dump($_POST[$token_id]);
+    }//please comment this to enabe CSRF attack.
 }
 if(isset($_POST['homeAddress'])){
-    $homeAddress = escape($_POST['homeAddress']); //remove the calling of escape to enable XSS attack.
+    if($csrf->check_valid('post')){//please comment this to enabe CSRF attack.
+        $homeAddress = escape($_POST['homeAddress']); //remove the calling of escape to enable XSS attack.
+        var_dump($_POST[$token_id]);
+    }//please comment this to enabe CSRF attack.
 }
 $connection = mysqli_connect("localhost", "root", "", "loguser");
-
 echo "Sign up";
 echo "<br>";
-
     if(isset($_POST['subm']) and $connection){
         $userQuery = "SELECT * FROM loguser WHERE username = '".$username."'";
         $userResult = mysqli_query($connection, $userQuery);
@@ -57,6 +72,7 @@ echo "<br>";
     <input type="password" name="password" placeholder="Enter password">
     <input type="text" name="homeAddress" placeholder="Enter street name">
     <input type="submit" name="subm" value = "Create user and proceed to log in.">
+    <input type="hidden" name="<?= $token_id; ?>" value="<?= $token_value; ?>" />
     </form>
 </body>
 </html>
