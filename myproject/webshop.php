@@ -113,7 +113,8 @@ if($_SESSION['auth']== false){
   
   <nav class="navbar navbar-inverse" style="background:#04B745;">
     <div class="container-fluid">
-      <div class="navbar-header"> <a class="navbar-brand" href="#" style="color:#FFFFFF;">Products</a> </div>
+      <div class="navbar-header"> <a class="navbar-brand" href="#" style="color:#FFFFFF;">Products</a>
+      </div>
     </div>
   </nav>
   <div class="row">
@@ -147,9 +148,13 @@ if($_SESSION['auth']== false){
 </form>
   <br>
 <div class="row">
-      <div class="container" style="width:100px;">
+      <div class="container" style="width:120px;">
         <form method="post" action="webshop.php?action=logout">
     <button type="submit1" class="btn btn-warning">Log out</button>
+      <br>
+      <label for="user">User: <?php echo $_SESSION['username']?></label>
+
+</div>
 </div>
 </div>
 </body>
