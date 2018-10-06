@@ -9,6 +9,12 @@ $csrf = new Csrf();
 $token_id = $csrf->get_token_id();
 $token_value = $csrf->get_token($token_id);
 
+//Connection OS X
+//$connection = mysqli_connect("localhost", "root", "root", "loguser");
+
+//Connection windows
+$connection = mysqli_connect("localhost", "root", "", "loguser");
+
 
 
 $_SESSION['auth'] = false;
@@ -16,21 +22,26 @@ $username ='';
 $_SESSION['token'] = $token_id;
 if(isset($_POST['username'])){
     if($csrf->check_valid('post')){//please comment this to enabe CSRF attack.
-        var_dump($_POST[$token_id]);
-        $username = escape($_POST['username']); //remove the calling of escape to enable XSS attack.
+        $username = $_POST['username'];
+        $username = mysqli_real_escape_string($connection, $username); //remove the calling of mysqli_real_escape_string to enable SQL injections.
+        $username = htmlspecialchars($username);//remove the calling of htmlspecialchars to enable XSS attack.
+        var_dump($_POST[$token_id]); //Varför dumpar ni värdena?
     }//please comment this to enabe CSRF attack.
 
 }
 if(isset($_POST['password'])){
     if($csrf->check_valid('post')){//please comment this to enabe CSRF attack.
+       
+        $password = $_POST['password'];
+        //Kanske ska vi ta med detta...
+       // $password = mysqli_real_escape_string($connection, $password); //remove the calling of mysqli_real_escape_string to enable SQL injections.
+        //$password = htmlspecialchars($password);//remove the calling of htmlspecialchars to enable XSS attack.
+      
         var_dump($_POST[$token_id]);
-        $password = escape($_POST['password']);//remove the calling of escape to enable XSS attack.
    }//please comment this to enabe CSRF attack.
 }
 
 $submit = isset($_POST['sub']);
-$connection = mysqli_connect("localhost", "root", "", "loguser");
-
 
 echo "Sign In";
 echo "<br>";
@@ -45,9 +56,9 @@ $counter = intval($row['counter']);
         $userQuery = "SELECT * FROM loguser WHERE username = '".$username."'";
         $userResult = mysqli_query($connection, $userQuery);
         $row = mysqli_fetch_array($userResult);    
-        
+
         //User exist
-        if($row and $row['password'] == $password){
+        if($row and password_verify($password, $row['password'])){
         	$_SESSION['auth'] = true; 
             header("Location:webShop.php?action=emptyall");
         }else{

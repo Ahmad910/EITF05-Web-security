@@ -19,7 +19,13 @@ if($_SESSION['auth']== false){
   if($csrf->get_token_id()==$_SESSION['token']) {//please comment this to enabe CSRF attack.
     $_SESSION['ammount'] = 0;
     $cart = array();  
-    $conn = new PDO("mysql:host=localhost;dbname=create-products", 'root', '');		
+    
+    //Connection OS X
+    //$conn = new PDO("mysql:host=localhost;dbname=create-products", 'root', 'root');
+      
+    //Connection Windows
+    $conn = new PDO("mysql:host=localhost;dbname=create-products", '', 'root');
+      
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $action = isset($_GET['action'])?$_GET['action']:"";
     if($action=='addcart' && $_SERVER['REQUEST_METHOD']=='POST') {
@@ -113,8 +119,8 @@ if($_SESSION['auth']== false){
   
   <nav class="navbar navbar-inverse" style="background:#04B745;">
     <div class="container-fluid">
-      <div class="navbar-header"> <a class="navbar-brand" href="#" style="color:#FFFFFF;">Products</a>
-      </div>
+         <div class="navbar-header"> <a class="navbar-brand" href="#" style="color:#FFFFFF;">Products</a>
+       </div>
     </div>
   </nav>
   <div class="row">
@@ -151,9 +157,8 @@ if($_SESSION['auth']== false){
       <div class="container" style="width:120px;">
         <form method="post" action="webshop.php?action=logout">
     <button type="submit1" class="btn btn-warning">Log out</button>
-      <br>
-      <label for="user">User: <?php echo $_SESSION['username']?></label>
-
+    <br>
+    <label for="user">User: <?php echo $_SESSION['username']?></label>
 </div>
 </div>
 </div>
