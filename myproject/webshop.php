@@ -21,10 +21,10 @@ if($_SESSION['auth']== false){
     $cart = array();  
     
     //Connection OS X
-    //$conn = new PDO("mysql:host=localhost;dbname=create-products", 'root', 'root');
+    $conn = new PDO("mysql:host=localhost;dbname=create-products", 'root', 'root');
       
     //Connection Windows
-    $conn = new PDO("mysql:host=localhost;dbname=create-products", '', 'root');
+    // $conn = new PDO("mysql:host=localhost;dbname=create-products", 'root', '');
       
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $action = isset($_GET['action'])?$_GET['action']:"";
