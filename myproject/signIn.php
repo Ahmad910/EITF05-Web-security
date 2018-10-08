@@ -10,11 +10,10 @@ $token_id = $csrf->get_token_id();
 $token_value = $csrf->get_token($token_id);
 
 //Connection OS X
-//$connection = mysqli_connect("localhost", "root", "root", "loguser");
+//$connection = new mysqli("localhost", "root", "root", "loguser");
 
 //Connection windows
-$connection = mysqli_connect("localhost", "root", "", "loguser");
-
+$connection = new mysqli("localhost", "root", "", "loguser");
 
 
 $_SESSION['auth'] = false;
@@ -23,7 +22,6 @@ $_SESSION['token'] = $token_id;
 if(isset($_POST['username'])){
     if($csrf->check_valid('post')){//please comment this to enabe CSRF attack.
         $username = $_POST['username'];
-        $username = mysqli_real_escape_string($connection, $username); //remove the calling of mysqli_real_escape_string to enable SQL injections.
         $username = htmlspecialchars($username);//remove the calling of htmlspecialchars to enable XSS attack.
         var_dump($_POST[$token_id]); //Varför dumpar ni värdena?
     }//please comment this to enabe CSRF attack.
@@ -34,7 +32,6 @@ if(isset($_POST['password'])){
        
         $password = $_POST['password'];
         //Kanske ska vi ta med detta...
-       // $password = mysqli_real_escape_string($connection, $password); //remove the calling of mysqli_real_escape_string to enable SQL injections.
         //$password = htmlspecialchars($password);//remove the calling of htmlspecialchars to enable XSS attack.
       
         var_dump($_POST[$token_id]);
@@ -46,16 +43,16 @@ $submit = isset($_POST['sub']);
 echo "Sign In";
 echo "<br>";
 $_SESSION['username'] = $username;
-$userQuery = "SELECT counter FROM loguser WHERE username = '".$username."'";
-$row = mysqli_fetch_array(mysqli_query($connection, $userQuery));
+
 $counter = intval($row['counter']);
 
- if( $counter < 5){
+ if($counter < 5){
    
-    if($submit and $connection){
+    if($submit and !($connection->connect_error)){
+        
         $userQuery = "SELECT * FROM loguser WHERE username = '".$username."'";
-        $userResult = mysqli_query($connection, $userQuery);
-        $row = mysqli_fetch_array($userResult);    
+        $queryResult = $connection->query($userQuery);
+        $row = mysqli_fetch_array($queryResult);
 
         //User exist
         if($row and password_verify($password, $row['password'])){

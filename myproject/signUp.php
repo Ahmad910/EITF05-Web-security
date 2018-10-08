@@ -9,21 +9,17 @@ $token_id = $csrf->get_token_id();
 $token_value = $csrf->get_token($token_id);
 
 //Connection OS X
-//$connection = mysqli_connect("localhost", "root", "root", "loguser");
-//$connectionBL = mysqli_connect("localhost", "root", "root", "blacklist");
+//$connection = new mysqli("localhost", "root", "root", "loguser");
+//$connectionBL = new mysqli("localhost", "root", "root", "blacklist");
 
 //Connection windows
-$connection = mysqli_connect("localhost", "root", "", "loguser");
-$connectionBL = mysqli_connect("localhost", "root", "", "blacklist");
+$connection = new mysqli("localhost", "root", "", "loguser");
+$connectionBL = new mysqli("localhost", "root", "", "blacklist");
 
-//$hashFormat = "$2y$10$";
-//$salt = "word2018holahisvenskaresapero";
-//$hashF_and_salt = $hashFormat . $salt;
 
 if(isset($_POST['username'])){
     if($csrf->check_valid('post')){//please comment this to enabe CSRF attack.
         $username = $_POST['username'];
-        $username = mysqli_real_escape_string($connection, $username); //remove the calling of mysqli_real_escape_string to enable SQL injections.
         $username = htmlspecialchars($username);//remove the calling of htmlspecialchars to enable XSS attack.
         var_dump($_POST[$token_id]);
     }//please comment this to enabe CSRF attack.
@@ -31,7 +27,6 @@ if(isset($_POST['username'])){
 if(isset($_POST['password'])){
     if($csrf->check_valid('post')){//please comment this to enabe CSRF attack.
         $password = $_POST['password'];
-        $password = mysqli_real_escape_string($connection, $password); //remove the calling of mysqli_real_escape_string to enable SQL injections.
         $password = htmlspecialchars($password);//remove the calling of htmlspecialchars to enable XSS attack.
         //$password = crypt($password,$hashF_and_salt); //encrypt the password
 
@@ -41,20 +36,20 @@ if(isset($_POST['password'])){
 if(isset($_POST['homeAddress'])){
     if($csrf->check_valid('post')){//please comment this to enabe CSRF attack.
         $homeAddress = $_POST['homeAddress'];
-        $homeAddress = mysqli_real_escape_string($connection, $homeAddress); //remove the calling of mysqli_real_escape_string to enable SQL injections.
         $homeAddress = htmlspecialchars($homeAddress);//remove the calling of htmlspecialchars to enable XSS attack.
         var_dump($_POST[$token_id]);
     }//please comment this to enable CSRF attack.
 }
 echo "Sign up";
 echo "<br>";
-    if(isset($_POST['subm']) and $connection){
+    if(isset($_POST['subm']) and !($connection->connect_error) and !($connectionBL->connect_error)){
+        
         $userQuery = "SELECT * FROM loguser WHERE username = '".$username."'";
-        $userResult = mysqli_query($connection, $userQuery);
-        $row = mysqli_fetch_array($userResult);
+        $queryResult = $connection->query($userQuery);
+        $row = mysqli_fetch_array($queryResult);
         
         $blacklistQuery = "SELECT * FROM blacklist WHERE bl_name = '".$password."'";
-        $blResult = mysqli_query($connectionBL, $blacklistQuery);
+        $blResult = $connectionBL->query($blacklistQuery);
         $blRow = mysqli_fetch_array($blResult);
       
         //Check if username is correct
@@ -62,7 +57,8 @@ echo "<br>";
             echo ("Please fill in all information.");
         } else if($row){
                 echo "Username aldredy exists. ";  
-        } else if(strlen($username) > 300){
+        }
+        else if(strlen($username) > 300){
                 echo "Username is too long. ";
         } else if(strlen($password) < 8){
                 echo "Password is too short. ";
@@ -79,14 +75,14 @@ echo "<br>";
                 echo "<br>";
                 echo "Special character/s (~`!@#$%^&*()+=_-{}[]\|:;”’?/<>,.)";
                 echo "<br>";
-        }
-            
-            //Checks if user-info is valid and add user.
-        else{
+        }//Checks if user-info is valid and add user.
+         else{
             $password = password_hash($password, PASSWORD_DEFAULT); //hash + salt
-            $query = "INSERT INTO loguser(homeAddress,username,password)";
-            $query .= "VALUES ('$homeAddress','$username', '$password')";
-            $result = mysqli_query($connection, $query);
+            $query = $connection->prepare("INSERT INTO loguser(username, password, homeAddress) VALUES (?,?,?)");
+            $query->bind_param("sss", $username, $password, $homeAddress);
+            $query->execute();
+            $query->close();
+
             header("Location:signIn.php");
             if(!$result){
                 die('Query failed' . mysqli_error());
