@@ -9,12 +9,12 @@ $token_id = $csrf->get_token_id();
 $token_value = $csrf->get_token($token_id);
 
 //Connection OS X
-$connection = mysqli_connect("localhost", "root", "root", "loguser");
-$connectionBL = mysqli_connect("localhost", "root", "root", "blacklist");
+//$connection = mysqli_connect("localhost", "root", "root", "loguser");
+//$connectionBL = mysqli_connect("localhost", "root", "root", "blacklist");
 
 //Connection windows
-//$connection = mysqli_connect("localhost", "root", "", "loguser");
-//$connectionBL = mysqli_connect("localhost", "root", "", "blacklist");
+$connection = mysqli_connect("localhost", "root", "", "loguser");
+$connectionBL = mysqli_connect("localhost", "root", "", "blacklist");
 
 //$hashFormat = "$2y$10$";
 //$salt = "word2018holahisvenskaresapero";
