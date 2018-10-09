@@ -1,5 +1,5 @@
 <?php
-class csrf {
+class Csrf {
     public function get_token_id() {
         if(isset($_SESSION['token_id'])) { 
                 return $_SESSION['token_id'];
