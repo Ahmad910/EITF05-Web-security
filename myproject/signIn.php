@@ -43,7 +43,9 @@ $submit = isset($_POST['sub']);
 echo "Sign In";
 echo "<br>";
 $_SESSION['username'] = $username;
-
+$userQuery = "SELECT * FROM loguser WHERE username = '".$username."'";    
+$queryResult = $connection->query($userQuery);
+$row = mysqli_fetch_array($queryResult);
 $counter = intval($row['counter']);
 
  if($counter < 5){
@@ -68,6 +70,7 @@ $counter = intval($row['counter']);
 }else{
      exit("Brute Force Lockdown. Contact webmaster!");
   }
+
 
 ?>
 
