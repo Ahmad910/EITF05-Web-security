@@ -1,8 +1,8 @@
 <?php
 session_start();
-require 'preventXSS.php'; //please comment "require 'preventXSS.php'" to enable XSS attack.
+require 'preventXSS.php'; //comment "require 'preventXSS.php'" to enable XSS attack.
 
-//please comment the next 4 rows to enabe CSRF attack.
+//comment the next 4 rows to enabe CSRF attack.
 include'Csrf.php';
 $csrf = new Csrf();
 $token_id = $csrf->get_token_id();
@@ -11,7 +11,7 @@ $token_value = $csrf->get_token($token_id);
 
 
 
-if(isset($_SESSION['auth'])){//please comment this to enabe CSRF attack.
+if(isset($_SESSION['auth'])){//comment this to enabe CSRF attack.
   if($_SESSION['auth']== false){
   echo 'ERROR: unauthenticated';
   }else{
@@ -44,7 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   }
 }
 
-}//please comment this to enabe CSRF attack.
+}//comment this to enabe CSRF attack.
 ?>
 <h2>Performing the payment..</h2>
 <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">  
@@ -55,7 +55,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <input type="hidden" name="<?= $token_id; ?>" value="<?= $token_value; ?>" />
   </form>
 <?php
-if($csrf->check_valid('post')){//please comment this to enabe CSRF attack.
+if($csrf->check_valid('post')){//comment this to enabe CSRF attack.
 if (isset($_POST['submit'])) {
   if (empty($_POST["cardNumber"])) {
   }
@@ -91,7 +91,7 @@ if (isset($_POST['submit'])) {
     echo '<br/>';
     echo 'Purchaser: ';
     echo $name;
-  }//please comment this to enabe CSRF attack.
+  }// comment this to enabe CSRF attack.
 ?>
     
 <br><br><br><br>

@@ -2,7 +2,7 @@
 error_reporting(0);
 
 session_start();
-//please comment the next 4 rows to enabe CSRF attack.
+//comment the next 4 rows to enabe CSRF attack.
 include'Csrf.php';
 $csrf = new Csrf();
 $token_id = $csrf->get_token_id();
@@ -16,7 +16,7 @@ $token_value = $csrf->get_token($token_id);
 if($_SESSION['auth']== false){
   echo 'ERROR: unauthenticated';
 }else{
-  if($csrf->get_token_id()==$_SESSION['token']) {//please comment this to enabe CSRF attack.
+  if($csrf->get_token_id()==$_SESSION['token']) {//comment this to enabe CSRF attack.
     $_SESSION['ammount'] = 0;
     $cart = array();  
     
@@ -43,7 +43,9 @@ if($_SESSION['auth']== false){
     if($action=='emptyall') {
 	     $_SESSION['products'] =array();
        $_SESSION['ammount']= 0;
-	     header("Location:webshop.php");	
+       if($csrf->check_valid('post')){//comment this to enabe CSRF attack.
+	       header("Location:webshop.php");	
+      }//comment this to enabe CSRF attack.
     }
 
     if($action=='empty') {
@@ -52,23 +54,29 @@ if($_SESSION['auth']== false){
       $_SESSION['ammount'] = $_SESSION['ammount'] - $product['price'];
 	   unset($products[$sku]);
 	   $_SESSION['products']= $products;
-	   header("Location:webshop.php");	
+     if($csrf->check_valid('post')){//comment this to enabe CSRF attack.
+	     header("Location:webshop.php");	
+     }// comment this to enabe CSRF attack.
     }
 
     if($action=='pay') {  
-      header("Location:payment.php");
+       if($csrf->check_valid('post')){//comment this to enabe CSRF attack.
+          header("Location:payment.php");
+      }//comment this to enabe CSRF attack.
     } 
 
     if($action == 'logout'){
       $_SESSION['auth'] = false;
-      header("Location:index.php");
+      if($csrf->check_valid('post')){//comment this to enabe CSRF attack.
+        header("Location:index.php");
+      }// comment this to enabe CSRF attack.
     }
  
     $query = "SELECT * FROM products";
     $stmt = $conn->prepare($query);
     $stmt->execute();
     $products = $stmt->fetchAll();
-}//please comment this to enabe CSRF attack.
+}// comment this to enabe CSRF attack.
 ?>
 <!DOCTYPE html>
 <html lang="en">

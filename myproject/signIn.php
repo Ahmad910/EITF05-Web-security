@@ -2,8 +2,8 @@
 
 
 session_start();
-require 'preventXSS.php'; //please comment "require 'preventXSS.php'" to enable XSS attack.
-//please comment the next 4 rows to enabe CSRF attack.
+require 'preventXSS.php'; // comment "require 'preventXSS.php'" to enable XSS attack.
+// comment the next 4 rows to enabe CSRF attack.
 include'Csrf.php';
 $csrf = new Csrf();
 $token_id = $csrf->get_token_id();
@@ -20,22 +20,13 @@ $_SESSION['auth'] = false;
 $username ='';
 $_SESSION['token'] = $token_id;
 if(isset($_POST['username'])){
-    if($csrf->check_valid('post')){//please comment this to enabe CSRF attack.
         $username = $_POST['username'];
-        $username = htmlspecialchars($username);//remove the calling of htmlspecialchars to enable XSS attack.
-        var_dump($_POST[$token_id]); //Varför dumpar ni värdena?
-    }//please comment this to enabe CSRF attack.
-
+        $username = escape($username);//remove the calling of htmlspecialchars to enable XSS attack.
 }
 if(isset($_POST['password'])){
-    if($csrf->check_valid('post')){//please comment this to enabe CSRF attack.
-       
         $password = $_POST['password'];
         //Kanske ska vi ta med detta...
-        //$password = htmlspecialchars($password);//remove the calling of htmlspecialchars to enable XSS attack.
-      
-        var_dump($_POST[$token_id]);
-   }//please comment this to enabe CSRF attack.
+        //$password = htmlspecialchars($password);//remove the calling of htmlspecialchars to enable XSS attack.   
 }
 
 $submit = isset($_POST['sub']);
@@ -59,7 +50,10 @@ $counter = intval($row['counter']);
         //User exist
         if($row and password_verify($password, $row['password'])){
         	$_SESSION['auth'] = true; 
-            header("Location:webShop.php?action=emptyall");
+              if($csrf->check_valid('post')){//comment this to enabe CSRF attack.
+                header("Location:webShop.php?action=emptyall");
+                //var_dump($_POST[$token_id]); //Varför dumpar ni värdena?
+            }// comment this to enabe CSRF attack.
         }else{
             echo "Incorrect username or password";
             $counter = $counter + 1;

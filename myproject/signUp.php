@@ -1,8 +1,8 @@
 <?php
 
 session_start();
-require 'preventXSS.php'; //please comment "require 'preventXSS.php'" to enable XSS attack.
-//please comment the next 4 rows to enabe CSRF attack.
+require 'preventXSS.php'; //comment "require 'preventXSS.php'" to enable XSS attack.
+// comment the next 4 rows to enabe CSRF attack.
 include'Csrf.php';
 $csrf = new Csrf();
 $token_id = $csrf->get_token_id();
@@ -18,28 +18,21 @@ $connectionBL = new mysqli("localhost", "root", "", "blacklist");
 
 
 if(isset($_POST['username'])){
-    if($csrf->check_valid('post')){//please comment this to enabe CSRF attack.
+    
         $username = $_POST['username'];
-        $username = htmlspecialchars($username);//remove the calling of htmlspecialchars to enable XSS attack.
+        $username = escape($username);//remove the calling of escape to enable XSS attack.
         var_dump($_POST[$token_id]);
-    }//please comment this to enabe CSRF attack.
+   
 }
 if(isset($_POST['password'])){
-    if($csrf->check_valid('post')){//please comment this to enabe CSRF attack.
         $password = $_POST['password'];
-        $password = htmlspecialchars($password);//remove the calling of htmlspecialchars to enable XSS attack.
+        $password = escape($password);//remove the calling of escape to enable XSS attack.
         //$password = crypt($password,$hashF_and_salt); //encrypt the password
-
-        var_dump($_POST[$token_id]);
-    }//please comment this to enabe CSRF attack.
 }
 if(isset($_POST['homeAddress'])){
-    if($csrf->check_valid('post')){//please comment this to enabe CSRF attack.
         $homeAddress = $_POST['homeAddress'];
-        $homeAddress = htmlspecialchars($homeAddress);//remove the calling of htmlspecialchars to enable XSS attack.
-        var_dump($_POST[$token_id]);
-    }//please comment this to enable CSRF attack.
-}
+        $homeAddress = escape($homeAddress);//remove the calling of escape to enable XSS attack.
+}       
 echo "Sign up";
 echo "<br>";
     if(isset($_POST['subm']) and !($connection->connect_error) and !($connectionBL->connect_error)){
@@ -82,8 +75,10 @@ echo "<br>";
             $query->bind_param("sss", $username, $password, $homeAddress);
             $query->execute();
             $query->close();
-
-            header("Location:signIn.php");
+            if($csrf->check_valid('post')){//pcomment this to enabe CSRF attack.
+                header("Location:signIn.php");
+                //var_dump($_POST[$token_id]);
+            }//comment this to enabe CSRF attack.
             if(!$result){
                 die('Query failed' . mysqli_error());
             }    
