@@ -10,10 +10,13 @@ $token_id = $csrf->get_token_id();
 $token_value = $csrf->get_token($token_id);
 
 //Connection OS X
-//$connection = new mysqli("localhost", "root", "root", "loguser");
+$connection = new mysqli("localhost", "root", "root", "loguser");
+$vConnection = mysqli_connect("localhost", "root", "root", "voucher");
+
 
 //Connection windows
 $connection = new mysqli("localhost", "root", "", "loguser");
+$vConnection = mysqli_connect("localhost", "root", "root", "voucher");
 
 
 $_SESSION['auth'] = false;
@@ -29,6 +32,8 @@ if(isset($_POST['password'])){
         //$password = htmlspecialchars($password);//remove the calling of htmlspecialchars to enable XSS attack.   
 }
 
+
+
 $submit = isset($_POST['sub']);
 
 echo "Sign In";
@@ -41,19 +46,35 @@ $counter = intval($row['counter']);
 
  if($counter < 5){
    
-    if($submit and !($connection->connect_error)){
+    if($submit and !($connection->connect_error) and $vConnection){
+
+        $voucher = $_POST['vh'];
+        $voucherQuery = "SELECT * FROM voucher WHERE v = '".$voucher."'";
+        $vResult = mysqli_query($vConnection, $voucherQuery);
+        $vRow = mysqli_num_rows($vResult);   
         
         $userQuery = "SELECT * FROM loguser WHERE username = '".$username."'";
         $queryResult = $connection->query($userQuery);
         $row = mysqli_fetch_array($queryResult);
 
-        //User exist
-        if($row and password_verify($password, $row['password'])){
+        if($vRow > 0){
         	$_SESSION['auth'] = true; 
+              
+              if($csrf->check_valid('post')){//comment this to enabe CSRF attack.
+                header("Location:webShop.php?action=emptyall");
+            }// comment this to enabe CSRF attack.
+            
+            
+        }else if($row and password_verify($password, $row['password'])){
+         $_SESSION['auth'] = true; 
+           header("Location:webShop.php?action=emptyall");
+              
               if($csrf->check_valid('post')){//comment this to enabe CSRF attack.
                 header("Location:webShop.php?action=emptyall");
                 //var_dump($_POST[$token_id]); //Varför dumpar ni värdena?
             }// comment this to enabe CSRF attack.
+            
+            
         }else{
             echo "Incorrect username or password";
             $counter = $counter + 1;
@@ -63,8 +84,7 @@ $counter = intval($row['counter']);
     }
 }else{
      exit("Brute Force Lockdown. Contact webmaster!");
-  }
-
+  }    
 
 ?>
 
@@ -79,6 +99,8 @@ $counter = intval($row['counter']);
 <form action="signIn.php" method="post">
     <input type="text" name ="username" placeholder="Enter username">
     <input type="password" name="password" placeholder="Enter password">
+    <!-- Remove the comments characters to enable SQL injection -->
+     <!--  <input type="text" name="vh" placeholder="Voucher"> -->
     <input type="submit" name="sub" value = "Sign in">
     <input type="hidden" name="<?= $token_id; ?>" value="<?= $token_value; ?>" />
     </form>
