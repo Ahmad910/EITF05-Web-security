@@ -10,8 +10,8 @@ $token_id = $csrf->get_token_id();
 $token_value = $csrf->get_token($token_id);
 
 //Connection OS X
-$connection = new mysqli("localhost", "root", "root", "loguser");
-$vConnection = mysqli_connect("localhost", "root", "root", "voucher");
+//$connection = new mysqli("localhost", "root", "root", "loguser");
+//$vConnection = mysqli_connect("localhost", "root", "root", "voucher");
 
 
 //Connection windows
