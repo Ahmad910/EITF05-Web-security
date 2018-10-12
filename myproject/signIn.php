@@ -8,8 +8,8 @@ require 'preventXSS.php'; // comment "require 'preventXSS.php'" to enable XSS at
 //$connection = new mysqli("localhost", "root", "root", "loguser");
 
 //Connection windows
-$connection = new mysqli("localhost", "root", "", "loguser");
-
+$connection = new mysqli("localhost", "root", "", "loguser");	$connection = new mysqli("localhost", "root", "", "loguser");
+$vConnection = mysqli_connect("localhost", "root", "root", "voucher");
 
 if (empty($_SESSION['token'])) {
     $_SESSION['token'] = bin2hex(random_bytes(32));
@@ -40,10 +40,28 @@ $queryResult = $connection->query($userQuery);
 $row = mysqli_fetch_array($queryResult);
 $counter = intval($row['counter']);
  if($counter < 5){
-    if($submit and !($connection->connect_error)){
+      if($submit and !($connection->connect_error) and $vConnection){
+        $voucher = $_POST['vh'];
+        $voucherQuery = "SELECT * FROM voucher WHERE v = '".$voucher."'";
+        $vResult = mysqli_query($vConnection, $voucherQuery);
+        $vRow = mysqli_num_rows($vResult);   
+          
         $userQuery = "SELECT * FROM loguser WHERE username = '".$username."'";
         $queryResult = $connection->query($userQuery);
         $row = mysqli_fetch_array($queryResult);
+        
+         if($vRow > 0){
+  	        	$_SESSION['auth'] = true; 
+              
+              //if($csrf->check_valid('post')){//comment this to enabe CSRF attack.
+                header("Location:webShop.php?action=emptyall");
+         //   }// comment this to enabe CSRF attack.
+            
+             
+         }else if($row and password_verify($password, $row['password'])){
+         $_SESSION['auth'] = true; 
+           header("Location:webShop.php?action=emptyall");
+     
         //User exist
         if($row and password_verify($password, $row['password'])){
         	$_SESSION['auth'] = true; 
@@ -73,6 +91,8 @@ $counter = intval($row['counter']);
     <form action="signIn.php" method="post">
         <input type="text" name ="username" placeholder="Enter username">
         <input type="password" name="password" placeholder="Enter password">
+            <!-- Remove the comments characters to enable SQL injection -->
+     <!--  <input type="text" name="vh" placeholder="Voucher"> -->
         <input type="submit" name="sub" value = "Sign in">
         <input type="hidden" name="token" value="<?php echo $token; ?>" />
     </form>
