@@ -1,20 +1,9 @@
 <?php
 session_start();
 require 'preventXSS.php'; //comment "require 'preventXSS.php'" to enable XSS attack.
-
-
-
-if (empty($_SESSION['token'])) {
-    $_SESSION['token'] = bin2hex(random_bytes(32));
-}
-$token = $_SESSION['token'];
-
-
-
-if(isset($_SESSION['auth'])){
-  if($_SESSION['auth']== false){
-    echo 'ERROR: unauthenticated';
-  }else{
+if($_SESSION['auth']== false){
+  echo 'ERROR: unauthenticated';
+}else{
 ?>
 <!DOCTYPE HTML>  
 <html>
@@ -26,7 +15,6 @@ if(isset($_SESSION['auth'])){
 <title>Cashout</title></head>
 <body>  
 <?php
-
 $total = $_SESSION['ammount'];
 $name = $_SESSION['username'];
 $cardNumberErr = "";
@@ -34,7 +22,7 @@ $cardNumber = "";
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
   if (empty($_POST["cardNumber"])) {
     $cardNumberErr = "Card number is required";
-  }else {
+  } else {
     $cardNumber = $_POST["cardNumber"];
     if (!preg_match("/^[0-9]*$/",$cardNumber)) {
       $cardNumberErr = "Only numbers allowed"; 
@@ -43,21 +31,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 ?>
 <h2>Performing the payment..</h2>
-<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">  
+<form action="getting.php?action=emptyall" method="post"> 
   Card Number: <input type="text" name="cardNumber" value="<?php echo $cardNumber;?>">
   <span class="error">* <?php echo $cardNumberErr;?></span>
   <br><br>
   <input type="submit" name="submit" value="Purchase">  
-  <input type="hidden" name="<?= $token_id; ?>" value="<?= $token_value; ?>" />
-  </form>
+</form>
 <?php
 if (isset($_POST['submit'])) {
   if (empty($_POST["cardNumber"])) {
   }
   elseif (!preg_match("/^[0-9]*$/",escape($cardNumber))) { //remove the calling of escape to enable XSS attack.
-      
    }else{
-   	?>
+    ?>
     <h2>Your receipt:</h2>
     Thank you for your purchase!
     <br>
@@ -86,20 +72,16 @@ if (isset($_POST['submit'])) {
     echo '<br/>';
     echo 'Purchaser: ';
     echo $name;
-?>
-    
+?>   
 <br><br><br><br>
-<form action="webshop.php?action=emptyall" method="post"> 
+<form action="getting.php?action=emptyall" method="post"> 
     <input type="submit" name="backToWs" value = "Continue shoping!">
-    <input type="hidden" name="token" value="<?php echo $token; ?>" />
-  </form>
-    <?php
+</form>
+<?php
      }    
 }?>
 </body>
 </html>
 <?php
-     }    
-}else{
-     echo 'ERROR: unauthenticated';
-}?>
+     }
+?>
