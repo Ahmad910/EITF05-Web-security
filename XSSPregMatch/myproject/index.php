@@ -5,11 +5,27 @@ echo "<br>";
 echo "Please sign in or sign up."; 
 
 
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+    if (!empty($_POST['token'])) {
+        //If matches, allow user then to post the user to post
+        
+        if (hash_equals($_SESSION['token'], $_POST['token'])) {
+            unset($_SESSION['token']);
+            $_SESSION['posted'] = true;
+        } else {
+            die('CSRF failed.');
+        }
+    } else {
+        die('Token were not found.');
+    }
+    
+}
+
 if (empty($_SESSION['token'])) {
-    $_SESSION['token'] = bin2hex(random_bytes(32));
+    $_SESSION['token'] = bin2hex(random_bytes(64));
 }
 $token = $_SESSION['token'];
-
 
 ?>
 <!DOCTYPE html>

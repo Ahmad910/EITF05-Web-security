@@ -2,13 +2,28 @@
 session_start();
 require 'preventXSS.php'; // comment "require 'preventXSS.php'" to enable XSS attack.
 
+session_regenerate_id();
 
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+    if (!empty($_POST['token'])) {
+        //If matches, allow user then to post the user to post
+        if (hash_equals($_SESSION['token'], $_POST['token'])) {
+            unset($_SESSION['token']);
+            $_SESSION['posted'] = true;
+        } else {
+            die('CSRF failed.');
+        }
+    } else {
+        die('Token were not found.');
+    }
+    
+}
 
 if (empty($_SESSION['token'])) {
     $_SESSION['token'] = bin2hex(random_bytes(64));
 }
 $token = $_SESSION['token'];
-
 
 //Connection OS X
 //$connection = new mysqli("localhost", "root", "root", "loguser");
@@ -18,12 +33,12 @@ $connection = new mysqli("localhost", "root", "", "loguser");
 $vConnection = mysqli_connect("localhost", "root", "", "voucher");
 $_SESSION['auth'] = false;
 $username ='';
+$password = '';
 if(isset($_POST['username'])){
-        $username = $_POST['username'];
-        $username = escape($username);//remove the calling of htmlspecialchars to enable XSS attack.
+        $username = escape($_POST['username']);
 }
 if(isset($_POST['password'])){
-        $password = $_POST['password'];  
+        $password = escape($_POST['password']);  
 }
 $submit = isset($_POST['sub']);
 echo "Sign In";
@@ -35,7 +50,8 @@ $row = mysqli_fetch_array($queryResult);
 $counter = intval($row['counter']);
  if($counter < 5){
     if($submit and !($connection->connect_error) and $vConnection){
-        /* Remove to enable sql-injection
+        // Remove to enable sql-injection
+       /*
         $voucher = $_POST['vh'];
         $voucherQuery = "SELECT * FROM voucher WHERE v = '".$voucher."'";
         $vResult = mysqli_query($vConnection, $voucherQuery);
@@ -45,13 +61,18 @@ $counter = intval($row['counter']);
         //Prevents sql-injection
         $voucher = $_POST['vh'];
         $voucherQuery = "SELECT * FROM voucher WHERE v = '".$voucher."'";
-        $vResult = $connection->query($voucherQuery);
-        $row = mysqli_fetch_array($vRow);
-    
+        $vResult = $vConnection->query($voucherQuery);
+        $vRow = mysqli_fetch_array($vResult);
+
+
         
+
         $userQuery = "SELECT * FROM loguser WHERE username = '".$username."'";
         $queryResult = $connection->query($userQuery);
         $row = mysqli_fetch_array($queryResult);
+
+
+
         if($vRow > 0){
         	$_SESSION['auth'] = true; 
             header("Location:webShop.php?action=emptyall");

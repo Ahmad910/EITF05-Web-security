@@ -1,6 +1,5 @@
 <?php
 session_start();
-require 'preventXSS.php'; //comment "require 'preventXSS.php'" to enable XSS attack.
 if($_SESSION['auth']== false){
   echo 'ERROR: unauthenticated';
 }else{
@@ -31,7 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 ?>
 <h2>Performing the payment..</h2>
-<form action="getting.php?action=emptyall" method="post"> 
+<form action="https://www.youtube.com" method="post"> 
   Card Number: <input type="text" name="cardNumber" value="<?php echo $cardNumber;?>">
   <span class="error">* <?php echo $cardNumberErr;?></span>
   <br><br>
@@ -41,7 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 if (isset($_POST['submit'])) {
   if (empty($_POST["cardNumber"])) {
   }
-  elseif (!preg_match("/^[0-9]*$/",escape($cardNumber))) { //remove the calling of escape to enable XSS attack.
+  elseif (!preg_match("/^[0-9]*$/",$cardNumber)) { 
    }else{
     ?>
     <h2>Your receipt:</h2>
@@ -74,7 +73,7 @@ if (isset($_POST['submit'])) {
     echo $name;
 ?>   
 <br><br><br><br>
-<form action="getting.php?action=emptyall" method="post"> 
+<form action="payment.php?action=emptyall" method="post"> 
     <input type="submit" name="backToWs" value = "Continue shoping!">
 </form>
 <?php

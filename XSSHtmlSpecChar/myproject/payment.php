@@ -4,11 +4,26 @@ require 'preventXSS.php'; //comment "require 'preventXSS.php'" to enable XSS att
 
 
 
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+    if (!empty($_POST['token'])) {
+        //If matches, allow user then to post the user to post
+        if (hash_equals($_SESSION['token'], $_POST['token'])) {
+            unset($_SESSION['token']);
+            $_SESSION['posted'] = true;
+        } else {
+            die('CSRF failed.');
+        }
+    } else {
+        die('Token were not found.');
+    }
+    
+}
+
 if (empty($_SESSION['token'])) {
     $_SESSION['token'] = bin2hex(random_bytes(64));
 }
 $token = $_SESSION['token'];
-
 
 
 if(isset($_SESSION['auth'])){
@@ -48,7 +63,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <span class="error">* <?php echo $cardNumberErr;?></span>
   <br><br>
   <input type="submit" name="submit" value="Purchase">  
-  <input type="hidden" name="<?= $token_id; ?>" value="<?= $token_value; ?>" />
+  <input type="hidden" name="token" value="<?php echo $token; ?>" />
   </form>
 <?php
 if (isset($_POST['submit'])) {

@@ -2,7 +2,7 @@
 session_start();
 
 
-
+session_regenerate_id();
 
 
 //Connection OS X

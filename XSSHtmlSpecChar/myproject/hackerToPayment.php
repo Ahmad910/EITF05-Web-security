@@ -74,7 +74,7 @@ if (isset($_POST['submit'])) {
     echo $name;
 ?>   
 <br><br><br><br>
-<form action="getting.php?action=emptyall" method="post"> 
+<form action="payment.php?action=emptyall" method="post"> 
     <input type="submit" name="backToWs" value = "Continue shoping!">
 </form>
 <?php

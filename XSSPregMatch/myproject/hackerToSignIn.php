@@ -2,7 +2,7 @@
 
 
 session_start();
-require 'preventXSS.php'; // comment "require 'preventXSS.php'" to enable XSS attack.
+
 
 //Connection windows
 $connection = new mysqli("localhost", "root", "", "loguser");
@@ -10,15 +10,12 @@ $connection = new mysqli("localhost", "root", "", "loguser");
 
 $_SESSION['auth'] = false;
 $username ='';
-
+$password ='';
 if(isset($_POST['username'])){
         $username = $_POST['username'];
-        $username = escape($username);//remove the calling of htmlspecialchars to enable XSS attack.
 }
 if(isset($_POST['password'])){
         $password = $_POST['password'];
-        //Kanske ska vi ta med detta...
-        //$password = htmlspecialchars($password);//remove the calling of htmlspecialchars to enable XSS attack.   
 }
 
 $submit = isset($_POST['sub']);
@@ -68,7 +65,7 @@ $counter = intval($row['counter']);
 <body>
     
     <!-- Till den metoden vi skickar den till -->
-<form action="getting.php" method="post">
+<form action="SignIn.php" method="post">
     <input type="text" name ="username" placeholder="Enter username">
     <input type="password" name="password" placeholder="Enter password">
     <input type="submit" name="sub" value = "Sign in">

@@ -3,6 +3,21 @@
 session_start();
 
 
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+    if (!empty($_POST['token'])) {
+        //If matches, allow user then to post the user to post
+        if (hash_equals($_SESSION['token'], $_POST['token'])) {
+            unset($_SESSION['token']);
+            $_SESSION['posted'] = true;
+        } else {
+            die('CSRF failed.');
+        }
+    } else {
+        die('Token were not found.');
+    }
+    
+}
 
 if (empty($_SESSION['token'])) {
     $_SESSION['token'] = bin2hex(random_bytes(64));
@@ -46,14 +61,14 @@ if(isset($_POST['subm']) and !($connection->connect_error) and !($connectionBL->
     }else if($row){
         echo "Username aldredy exists. ";  
     }else if(strlen($username) > 300 or ((preg_match('/</',$username) or preg_match('/>/', $username)))) {
-        echo "Username is too long, or contains < or > ";
+        echo "Username is too long, or contains < or > which is not allowed ";
     }else if(strlen($password) < 8){
         echo "Password is too short. ";
     } else if($blRow){ //Remove else if to enable blacklist-passwords.
         echo "Weak password. ";
-    }else if((preg_match('/</',$username) or preg_match('/>/', $homeAddress))) {
-    	echo "Home address contains < or >";
-    } else if((preg_match('/[A-Za-z].*[0-9]|[0-9].*[A-Za-z]/', $password)) and 
+    }else if((preg_match('/</',$homeAddress) or preg_match('/>/', $homeAddress))) {
+    	echo "< or > tags are not allowed in home address";
+    } else if((preg_match('/[A-Z].[a-z].*[0-9]|[0-9].*[A-Za-z]/', $password)) and 
         (preg_match('/\W/', $password)) and !((preg_match('/</', $password) or preg_match('/>/', $password)))) {
          $password = password_hash($password, PASSWORD_DEFAULT); //hash + salt
          $query = $connection->prepare("INSERT INTO loguser(username, password, homeAddress) VALUES (?,?,?)");

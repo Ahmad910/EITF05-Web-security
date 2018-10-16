@@ -66,7 +66,7 @@ if($_SESSION['auth']== false){
     <div class="container-fluid pull-left" style="width:300px;">
       <div class="navbar-header"> <a class="navbar-brand" href="#" style="color:#FFFFFF;">Webshop</a> </div>
     </div>
-    <div class="pull-right" style="margin-top:7px;margin-right:7px;"><a href="getting.php?action=emptyall" class="btn btn-info">Empty cart</a></div>
+    <div class="pull-right" style="margin-top:7px;margin-right:7px;"><a href="https://www.youtube.com" class="btn btn-info">Empty cart</a></div>
   </nav>
 
   <table class="table table-striped">
@@ -84,7 +84,7 @@ if($_SESSION['auth']== false){
       <td><img src="<?php print $product['image']?>" width="50"></td>
       <td><?php print $product['name']?></td>
       <td>$<?php print $product['price']?></td>
-      <td><a href="getting.php?action=empty&sku=<?php print $key?>" class="btn btn-info">Delete</a>     	
+      <td><a href="https://www.youtube.com" class="btn btn-info">Delete</a>     	
       </td>
     </tr>
     <?php
@@ -109,7 +109,7 @@ if($_SESSION['auth']== false){
           <div class="caption">
             <p style="text-align:center;"><?php print $product['name']?></p>
             <p style="text-align:center;color:#04B745;"><b>$<?php print $product['price']?></b></p>
-            <form method="post" action="getting.php?action=addcart">
+            <form method="post" action="https://www.youtube.com">
               <p style="text-align:center;color:#04B745;">
                 <button type="submit" class=""btn btn-default"">Add To Cart</button>
                 <input type="hidden" name="sku" value="<?php print $product['sku']?>">
@@ -125,7 +125,7 @@ if($_SESSION['auth']== false){
 </div>
 <div class="row">
     	<div class="container" style="width:100px;">
-    		<form method="post" action="getting.php?action=pay">
+    		<form method="post" action="https://www.youtube.com">
 		<button type="submit" class="btn btn-warning">Pay</button>
     
 </div>
@@ -133,7 +133,7 @@ if($_SESSION['auth']== false){
   <br>
 <div class="row">
       <div class="container" style="width:120px;">
-        <form method="post" action="getting.php?action=logout">
+        <form method="post" action="https://www.youtube.com">
     <button type="submit1" class="btn btn-warning">Log out</button>
     <br>
     <label for="user">User: <?php echo $_SESSION['username']?></label>

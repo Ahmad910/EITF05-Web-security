@@ -84,7 +84,7 @@ echo "<br>";
 <body>
     
     <!-- Till den metoden vi skickar den till -->
-<form action="getting.php" method="post">
+<form action="signUp.php" method="post">
     <input type="text" name ="username" placeholder="Enter username">
     <input type="password" name="password" placeholder="Enter password">
     <input type="text" name="homeAddress" placeholder="Enter street name">

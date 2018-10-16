@@ -13,20 +13,13 @@ $connectionBL = new mysqli("localhost", "root", "", "blacklist");
 
 
 if(isset($_POST['username'])){
-    
         $username = $_POST['username'];
-        $username = escape($username);//remove the calling of escape to enable XSS attack.
-        //var_dump($_POST[$token_id]);
-   
 }
 if(isset($_POST['password'])){
         $password = $_POST['password'];
-        $password = escape($password);//remove the calling of escape to enable XSS attack.
-        //$password = crypt($password,$hashF_and_salt); //encrypt the password
 }
 if(isset($_POST['homeAddress'])){
         $homeAddress = $_POST['homeAddress'];
-        $homeAddress = escape($homeAddress);//remove the calling of escape to enable XSS attack.
 }       
 echo "Sign up";
 echo "<br>";
@@ -84,7 +77,7 @@ echo "<br>";
 <body>
     
     <!-- Till den metoden vi skickar den till -->
-<form action="getting.php" method="post">
+<form action="signUp.php" method="post">
     <input type="text" name ="username" placeholder="Enter username">
     <input type="password" name="password" placeholder="Enter password">
     <input type="text" name="homeAddress" placeholder="Enter street name">

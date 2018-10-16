@@ -1,5 +1,7 @@
 <?php
 session_start();
+
+
 echo "Welcome to our webshop!";
 echo "<br>";
 echo "Please sign in or sign up.";
@@ -12,11 +14,11 @@ echo "Please sign in or sign up.";
 </head>
 <body>
     <!-- Sign up -->
-    <form action="getting.php" method="post">
+    <form action="signUp.php" method="post">
         <input type="submit" name="su" value="Sign Up">
     </form>
     <!-- Sign in -->
-    <form action="getting.php" method="post">
+    <form action="signIn.php" method="post">
         <input type="submit" name="su" value="Sign In">
     </form>    
 

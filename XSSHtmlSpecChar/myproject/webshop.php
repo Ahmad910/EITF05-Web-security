@@ -3,6 +3,21 @@ error_reporting(0);
 
 session_start();
 
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+    if (!empty($_POST['token'])) {
+        //If matches, allow user then to post the user to post
+        if (hash_equals($_SESSION['token'], $_POST['token'])) {
+            unset($_SESSION['token']);
+            $_SESSION['posted'] = true;
+        } else {
+            die('CSRF failed.');
+        }
+    } else {
+        die('Token were not found.');
+    }
+    
+}
 
 if (empty($_SESSION['token'])) {
     $_SESSION['token'] = bin2hex(random_bytes(64));
@@ -124,6 +139,7 @@ if($_SESSION['auth']== false){
               <p style="text-align:center;color:#04B745;">
                 <button type="submit" class=""btn btn-default"">Add To Cart</button>
                 <input type="hidden" name="sku" value="<?php print $product['sku']?>">
+                <input type="hidden" name="token" value="<?php echo $token; ?>" />
               </p>
             </form>
           </div>
@@ -136,7 +152,7 @@ if($_SESSION['auth']== false){
 </div>
 <div class="row">
     	<div class="container" style="width:100px;">
-    	 <form method="post" action="webshop.php?action=pay">
+    	 <form method="post" action="payment.php">
 		<button type="submit" class="btn btn-warning">Pay</button>
     <input type="hidden" name="token" value="<?php echo $token; ?>" />
 </div>
@@ -144,8 +160,9 @@ if($_SESSION['auth']== false){
   <br>
 <div class="row">
       <div class="container" style="width:120px;">
-        <form method="post" action="webshop.php?action=logout">
+        <form method="post" action="index.php">
     <button type="submit1" class="btn btn-warning">Log out</button>
+    <input type="hidden" name="token" value="<?php echo $token; ?>" />
     <br>
     <label for="user">User: <?php echo $_SESSION['username']?></label>
 </div>

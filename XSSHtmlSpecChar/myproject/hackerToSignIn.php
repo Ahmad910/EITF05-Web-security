@@ -17,8 +17,6 @@ if(isset($_POST['username'])){
 }
 if(isset($_POST['password'])){
         $password = $_POST['password'];
-        //Kanske ska vi ta med detta...
-        //$password = htmlspecialchars($password);//remove the calling of htmlspecialchars to enable XSS attack.   
 }
 
 $submit = isset($_POST['sub']);
@@ -68,7 +66,7 @@ $counter = intval($row['counter']);
 <body>
     
     <!-- Till den metoden vi skickar den till -->
-<form action="getting.php" method="post">
+<form action="signIn.php" method="post">
     <input type="text" name ="username" placeholder="Enter username">
     <input type="password" name="password" placeholder="Enter password">
     <input type="submit" name="sub" value = "Sign in">

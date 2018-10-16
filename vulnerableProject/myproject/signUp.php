@@ -18,7 +18,6 @@ if(isset($_POST['username'])){
 }
 if(isset($_POST['password'])){
         $password = $_POST['password'];
-        //$password = crypt($password,$hashF_and_salt); //encrypt the password
 }
 if(isset($_POST['homeAddress'])){
         $homeAddress = $_POST['homeAddress'];

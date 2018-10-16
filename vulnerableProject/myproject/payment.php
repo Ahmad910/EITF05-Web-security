@@ -1,9 +1,5 @@
 <?php
 session_start();
-
-
-
-
 if(isset($_SESSION['auth'])){
   if($_SESSION['auth']== false){
     echo 'ERROR: unauthenticated';
