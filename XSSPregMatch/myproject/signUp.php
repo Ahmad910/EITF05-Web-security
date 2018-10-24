@@ -7,7 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if (!empty($_POST['token'])) {
         //If matches, allow user then to post the user to post
-        if (hash_equals($_SESSION['token'], $_POST['token'])) {
+        if (hash_equals($_SESSION['token'], $_POST['token']) or $_SESSION['posted'] === true) {
             unset($_SESSION['token']);
             $_SESSION['posted'] = true;
         } else {
@@ -38,16 +38,12 @@ if(isset($_POST['username'])){
 }
 if(isset($_POST['password'])){
         $password = $_POST['password'];
-        //$password = crypt($password,$hashF_and_salt); //encrypt the password
 }
 if(isset($_POST['homeAddress'])){
         $homeAddress = $_POST['homeAddress'];
 }       
 echo "Sign up";
 echo "<br>";
-
-
-
 if(isset($_POST['subm']) and !($connection->connect_error) and !($connectionBL->connect_error)){
     $userQuery = "SELECT * FROM loguser WHERE username = '".$username."'";
     $queryResult = $connection->query($userQuery);
@@ -55,7 +51,6 @@ if(isset($_POST['subm']) and !($connection->connect_error) and !($connectionBL->
     $blacklistQuery = "SELECT * FROM blacklist WHERE bl_name = '".$password."'";
     $blResult = $connectionBL->query($blacklistQuery);
     $blRow = mysqli_fetch_array($blResult);
-    //Check if username is correct
     if(!($username and $password and $homeAddress)){
         echo ("Please fill in all information.");
     }else if($row){
@@ -64,7 +59,7 @@ if(isset($_POST['subm']) and !($connection->connect_error) and !($connectionBL->
         echo "Username is too long, or contains < or > which is not allowed ";
     }else if(strlen($password) < 8){
         echo "Password is too short. ";
-    } else if($blRow){ //Remove else if to enable blacklist-passwords.
+    } else if($blRow){ 
         echo "Weak password. ";
     }else if((preg_match('/</',$homeAddress) or preg_match('/>/', $homeAddress))) {
     	echo "< or > tags are not allowed in home address";
@@ -79,7 +74,7 @@ if(isset($_POST['subm']) and !($connection->connect_error) and !($connectionBL->
             if(!$result){
                 die('Query failed' . mysqli_error());
             }    
-    }//Checks if user-info is valid and add user.
+    }
       else{
         echo "Passwords must contain:";
         echo "<br>";

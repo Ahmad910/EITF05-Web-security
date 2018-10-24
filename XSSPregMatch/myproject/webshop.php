@@ -7,7 +7,6 @@ session_start();
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if (!empty($_POST['token'])) {
-        //If matches, allow user then to post the user to post
         if (hash_equals($_SESSION['token'], $_POST['token'])) {
             unset($_SESSION['token']);
             $_SESSION['posted'] = true;
@@ -39,7 +38,6 @@ if($_SESSION['auth']== false){
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $action = isset($_GET['action'])?$_GET['action']:"";
     if($action=='addcart' && $_SERVER['REQUEST_METHOD']=='POST') {
-	     //Finding the product by code
 	     $query = "SELECT * FROM products WHERE sku=:sku";
 	     $stmt = $conn->prepare($query);
 	     $stmt->bindParam('sku', $_POST['sku']);

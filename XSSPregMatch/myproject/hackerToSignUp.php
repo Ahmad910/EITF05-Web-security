@@ -40,7 +40,7 @@ echo "<br>";
                 echo "Username is too long. ";
         } else if(strlen($password) < 8){
                 echo "Password is too short. ";
-        } else if($blRow){ //Remove else if to enable blacklist-passwords.
+        } else if($blRow){ 
                 echo "Weak password. ";
         } else if(!(preg_match('/[A-Za-z].*[0-9]|[0-9].*[A-Za-z]/', $password)) and (!(preg_match('/~`!@#$%^&*()+=_-{}[]\|:;”’?/<>,./', $password)))){
                 echo "Passwords must contain:";

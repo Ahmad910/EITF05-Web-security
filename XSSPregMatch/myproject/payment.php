@@ -2,8 +2,7 @@
 session_start();
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!empty($_POST['token'])) {
-        //If matches, allow user then to post the user to post
-        if (hash_equals($_SESSION['token'], $_POST['token'])) {
+        if (hash_equals($_SESSION['token'], $_POST['token']) or $_SESSION['posted'] === true) {
             unset($_SESSION['token']);
             $_SESSION['posted'] = true;
         } else {

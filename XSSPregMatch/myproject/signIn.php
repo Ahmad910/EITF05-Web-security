@@ -1,11 +1,12 @@
 <?php
 session_start();
-session_regenerate_id();
+//session_regenerate_id();
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-    if (!empty($_POST['token'])) {
+    if (!empty($_POST['token']) ) {
         //If matches, allow user then to post the user to post
-        if (hash_equals($_SESSION['token'], $_POST['token'])) {
+        if (hash_equals($_SESSION['token'], $_POST['token']) or $_SESSION['posted'] === true) {
             unset($_SESSION['token']);
             $_SESSION['posted'] = true;
         } else {
@@ -29,25 +30,26 @@ $token = $_SESSION['token'];
 //Connection windows
 $connection = new mysqli("localhost", "root", "", "loguser");
 $vConnection = mysqli_connect("localhost", "root", "", "voucher");
+
 $_SESSION['auth'] = false;
 $username ='';
 $password = '';
 if(isset($_POST['username'])){
-	if(! ((preg_match('/</',$_POST['username']) or preg_match('/>/', $_POST['username'])))) {
+    if(! ((preg_match('/</',$_POST['username']) or preg_match('/>/', $_POST['username'])))) {
         $username = $_POST['username'];
-	}else{
-		echo"username cannot contain < or >";
+    }else{
+        echo"username cannot contain < or >";
         echo "<br>";
-	}
+    }
 }
 
 if(isset($_POST['password'])){
-	if(!((preg_match('/</', $_POST['password']) or preg_match('/>/', $_POST['password'])))) {
+    if(!((preg_match('/</', $_POST['password']) or preg_match('/>/', $_POST['password'])))) {
         $password = $_POST['password'];  
     }else{
-		echo"password cannot contain < or >";
+        echo"password cannot contain < or >";
         echo "<br>";
-	}
+    }
 }
 $submit = isset($_POST['sub']);
 echo "Sign In";
@@ -59,35 +61,28 @@ $row = mysqli_fetch_array($queryResult);
 $counter = intval($row['counter']);
  if($counter < 5){
     if($submit and !($connection->connect_error) and $vConnection){
-        // Remove to enable sql-injection
-       
+       // Remove to enable sql-injection
+        /*
         $voucher = $_POST['vh'];
         $voucherQuery = "SELECT * FROM voucher WHERE v = '".$voucher."'";
         $vResult = mysqli_query($vConnection, $voucherQuery);
         $vRow = mysqli_num_rows($vResult);
-        
-        /*
-        //Prevents sql-injection
-        $voucher = $_POST['vh'];
-        $voucherQuery = "SELECT * FROM voucher WHERE v = '".$voucher."'";
-        $vResult = $vConnection->query($voucherQuery);
-        $vRow = mysqli_fetch_array($vResult);
         */
 
-        
 
         $userQuery = "SELECT * FROM loguser WHERE username = '".$username."'";
         $queryResult = $connection->query($userQuery);
         $row = mysqli_fetch_array($queryResult);
 
-
-
+        /*
         if($vRow > 0){
-        	$_SESSION['auth'] = true; 
+            $_SESSION['auth'] = true; 
            header("Location:webShop.php?action=emptyall");
             
-            
+           
         }else if($row and password_verify($password, $row['password'])){
+        */
+            if($row and password_verify($password, $row['password'])){
             $_SESSION['auth'] = true; 
             header("Location:webShop.php?action=emptyall");
 
@@ -115,7 +110,7 @@ $counter = intval($row['counter']);
 <form action="signIn.php" method="post">
     <input type="text" name ="username" placeholder="Enter username">
     <input type="password" name="password" placeholder="Enter password">
-    <input type="text" name="vh" placeholder="Voucher"> 
+    <!-- <input type="text" name="vh" placeholder="Voucher"> --> 
     <input type="submit" name="sub" value = "Sign in">
     <input type="hidden" name="token" value="<?php echo $token; ?>" />
     </form>

@@ -6,8 +6,10 @@ if($_SESSION['auth']== false){
 }else{
     $_SESSION['ammount'] = 0;
     $cart = array();  
+
     //Connection OS X
     //$conn = new PDO("mysql:host=localhost;dbname=create-products", 'root', 'root');
+    
     //Connection Windows
     $conn = new PDO("mysql:host=localhost;dbname=create-products", 'root', '');
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

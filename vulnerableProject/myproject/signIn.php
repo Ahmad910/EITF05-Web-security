@@ -29,19 +29,19 @@ $row = mysqli_fetch_array($queryResult);
 $counter = intval($row['counter']);
  if($counter < 5){
     if($submit and !($connection->connect_error) and $vConnection){
-        /* Remove to enable sql-injection
+        //Remove to enable sql-injection
         $voucher = $_POST['vh'];
         $voucherQuery = "SELECT * FROM voucher WHERE v = '".$voucher."'";
         $vResult = mysqli_query($vConnection, $voucherQuery);
         $vRow = mysqli_num_rows($vResult);
-        */
-        
+       
+        /*
         //Prevents sql-injection
         $voucher = $_POST['vh'];
         $voucherQuery = "SELECT * FROM voucher WHERE v = '".$voucher."'";
         $vResult = $connection->query($voucherQuery);
         $row = mysqli_fetch_array($vRow);
-    
+    */
         
         $userQuery = "SELECT * FROM loguser WHERE username = '".$username."'";
         $queryResult = $connection->query($userQuery);
